@@ -1,0 +1,19 @@
+*** Variables ***
+${IP}             192.168.208.128
+
+*** Keywords ***
+setup
+    [Arguments]    ${table_name}
+    log    预置条件/搭建环境
+    Connect To Database    pymysql    scott    tester    passwd    ${IP}    3306
+    ...    utf8
+    OperatingSystem.run    taskkill /f /im chromedriver.exe    #杀残留的driver进程
+    Execute Sql String    DELETE FROM ${table_name};    #清理脏数据
+    log    1，打开网站
+    Open Browser    http://${IP}/mt    chrome
+    Set Global Variable    ${xx}    abcc    #跨测试用例传递变量
+
+teardown
+    log    恢复环境
+    Disconnect From Database    #释放数据库的连接资源
+    #Close Browser
